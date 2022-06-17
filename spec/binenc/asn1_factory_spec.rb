@@ -64,16 +64,6 @@ RSpec.describe "Define binary structure and helpers to manage the structure" do
 
     ste = afe.from_bin(res)
 
-    aff = Binenc::EngineFactory.instance(:bin_struct)
-    aff.load_definition("definition.def")
-    stf = aff.from_bin(res)
-    expect(stf.oid == af.oid).to be true
-    expect(stf.first == af.first).to be true
-    expect(stf.version == af.version).to be true
-    expect(stf.name == af.name).to be true 
-    expect(stf.seq == af.seq).to be true
-    expect(stf.valid.to_i == af.valid.to_i).to be true
-    
   end
 
 end
