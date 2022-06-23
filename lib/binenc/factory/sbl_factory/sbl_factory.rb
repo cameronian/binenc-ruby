@@ -10,6 +10,7 @@ module Binenc
 
       def define(&block)
         instance_eval(&block) 
+        self
       end
 
       def encoded
@@ -33,12 +34,60 @@ module Binenc
 
         structure.each_index do |i|
           name = structure[i]
-          val = ASN1Object.decode(seq[i]).value
+          
+          if seq[i].is_a?(String)
+            # begin block is to cater sequence but tagged as binary field
+            # Therefore during 1st decode, it will become an array with actual value, 
+            # no longer a ASN1 encoded field.
+            # Different if the field is tagged as sequence, then this will not happened
+            begin
+              val = ASN1Object.decode(seq[i]).value
+            rescue OpenSSL::ASN1::ASN1Error
+              val = seq[i]
+            end
+          else
+            val = seq[i]
+          end
+
+          case val
+          when OpenSSL::BN
+            val = val.to_i
+          end
           create_instance_method(name, val)
         end
 
         self
 
+      end
+
+      def value_from_bin_struct(bin, *fieldNo)
+
+        seq = ASN1Object.decode(bin).value
+
+        ret = []
+        fieldNo.each do |fn|
+          raise BinencEngineException, "Given field no '#{fn}' to extract is larger than found fields (#{seq.length})" if fn > seq.length
+
+          v = seq[fn]
+          if v.is_a?(String)
+            begin
+              vv = ASN1Object.decode(v).value
+            rescue OpenSSL::ASN1::ASN1Error
+              vv = v
+            end
+          else
+            vv = v
+          end
+
+          case vv
+          when OpenSSL::BN
+            ret << vv.to_i
+          else
+            ret << vv
+          end
+        end
+
+        ret
       end
 
       private
