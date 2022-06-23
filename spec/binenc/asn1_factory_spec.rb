@@ -29,6 +29,8 @@ RSpec.describe "Define binary structure and helpers to manage the structure" do
     af.valid = Time.now
 
     af.seq << "asdf"
+    af.seq << "second"
+    af.seq << 1234
 
     res = af.encoded
     expect(res.nil?).to be false
@@ -53,6 +55,9 @@ RSpec.describe "Define binary structure and helpers to manage the structure" do
     expect(st.name == af.name).to be true 
     expect(st.seq == af.seq).to be true
     expect(st.valid.to_i == af.valid.to_i).to be true
+
+    sts = afr.value_from_bin_struct(res, 0, 1)
+    p sts
 
     afe = Binenc::EngineFactory.instance(:bin_struct)
     afe.define do

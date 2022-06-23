@@ -118,10 +118,11 @@ module Binenc
         instance_eval <<-END
         
         def #{name}=(val)
-          #{name}_inst.value = val
+          \#puts "setting value for #{name} with \#\{val\}"
+          #{to_instance_method_name(name)}.value = val
         end
         def #{name}
-          #{name}_inst.value
+          #{to_instance_method_name(name)}.value
         end
 
 

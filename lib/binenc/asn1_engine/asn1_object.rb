@@ -22,16 +22,22 @@ module Binenc
           obj = OpenSSL::ASN1.decode(bin)    
           case obj
           when OpenSSL::ASN1::BitString
+            #logger.debug "Found bitstring value : #{obj.value}"
             ASN1Binary.new(obj.value)
           when OpenSSL::ASN1::UTF8String
+            #logger.debug "Found UTF8String value : #{obj.value}"
             ASN1String.new(obj.value)
           when OpenSSL::ASN1::Integer
+            #logger.debug "Found Integer value : #{obj.value}"
             ASN1Integer.new(obj.value)
           when OpenSSL::ASN1::Sequence
+            #logger.debug "Found sequence value : #{obj.value}"
             ASN1Sequence.new(obj.value)
           when OpenSSL::ASN1::GeneralizedTime
+            #logger.debug "Found GeneralizedTime value : #{obj.value}"
             ASN1DateTime.new(obj.value)
           when OpenSSL::ASN1::ObjectId
+            #logger.debug "Found ObjectId value : #{obj.value}"
             ASN1OID.new(obj.value)
           else
             raise BinencEngineException, "Unhandled ASN1 object '#{obj.class}'"
@@ -42,7 +48,7 @@ module Binenc
       end
 
       private
-      def logger
+      def self.logger
         if @logger.nil?
           @logger = TeLogger::Tlogger.new
           @logger.tag = :ruby_asn1Obj

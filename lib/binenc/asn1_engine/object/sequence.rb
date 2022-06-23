@@ -8,9 +8,7 @@ module Binenc
 
       def initialize(*args, &block)
         super
-        
         @value = to_value(@value) 
-
       end
 
       def encoded
@@ -24,10 +22,10 @@ module Binenc
       end
 
       private
-      def is_binary_string?(str)
-        # https://stackoverflow.com/a/32536221/3625825
-        str.count('01') == str.size
-      end
+      #def is_binary_string?(str)
+      #  # https://stackoverflow.com/a/32536221/3625825
+      #  str.count('01') == str.size
+      #end
 
       def to_encoded(val)
 
@@ -40,12 +38,15 @@ module Binenc
             when Integer
               ASN1Integer.new(e).encoded
             when String
-              if is_binary_string?(e)
+              if Binenc::Ruby.is_binary_string?(e)
                 ASN1Binary.new(e).encoded
               else
                 ASN1String.new(e).encoded
               end
+            when Time
+              ASN1DateTime.new(e).encoded
             else
+              logger.debug "Missed #{e} / #{e.class}"
               nil
             end
 
