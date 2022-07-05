@@ -43,7 +43,7 @@ module Binenc
             raise BinencEngineException, "Unhandled ASN1 object '#{obj.class}'"
           end
         else
-          raise BinencEngineException, "Cannot decode empty binary"
+          raise BinencEngineException, "Cannot decode empty binary #{bin}"
         end
       end
 

@@ -62,32 +62,37 @@ module Binenc
 
       def value_from_bin_struct(bin, *fieldNo)
 
-        seq = ASN1Object.decode(bin).value
+        begin
+          seq = ASN1Object.decode(bin).value
 
-        ret = []
-        fieldNo.each do |fn|
-          raise BinencEngineException, "Given field no '#{fn}' to extract is larger than found fields (#{seq.length})" if fn > seq.length
+          ret = []
+          fieldNo.each do |fn|
+            raise BinencEngineException, "Given field no '#{fn}' to extract is larger than found fields (#{seq.length})" if fn > seq.length
 
-          v = seq[fn]
-          if v.is_a?(String)
-            begin
-              vv = ASN1Object.decode(v).value
-            rescue OpenSSL::ASN1::ASN1Error
+            v = seq[fn]
+            if v.is_a?(String)
+              begin
+                vv = ASN1Object.decode(v).value
+              rescue OpenSSL::ASN1::ASN1Error
+                vv = v
+              end
+            else
               vv = v
             end
-          else
-            vv = v
+
+            case vv
+            when OpenSSL::BN
+              ret << vv.to_i
+            else
+              ret << vv
+            end
           end
 
-          case vv
-          when OpenSSL::BN
-            ret << vv.to_i
-          else
-            ret << vv
-          end
+          ret
+        rescue OpenSSL::ASN1::ASN1Error => ex
+          raise BinencDecodingError, ex
         end
 
-        ret
       end
 
       private
