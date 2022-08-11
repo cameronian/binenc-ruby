@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = ""
   spec.description   = ""
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/cameronian/binenc-ruby"
   spec.required_ruby_version = ">= 2.4.0"
 
   #spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
@@ -32,6 +32,10 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "teLogger"
   spec.add_dependency "toolrack"
+
+  spec.add_dependency 'binenc'
+
+  spec.add_development_dependency 'devops_assist'
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
